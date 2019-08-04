@@ -1,5 +1,6 @@
 import { Observable, Subject, BehaviorSubject, ReplaySubject, AsyncSubject, fromEvent, interval, from } from 'rxjs';
 import { scan, throttleTime, map, multicast, refCount } from 'rxjs/operators';
+import { ajax } from 'rxjs/ajax';
 
 class ObserverExample{
   constructor(){
@@ -191,17 +192,18 @@ class ObserverExample{
   }
   fromPromiseExample(event){
     const target = event.currentTarget;
-    const observable$ = Observable.create(observer => {
-      target.innerHTML = 'Loading...';
-      fetch('https://randomuser.me/api/')
-        .then(response => response.json())
-        .then(data => {
-          observer.next(data);
-          observer.complete();
-          target.innerHTML = 'Fetch Data';
-        })
-        .catch(err => observer.error(err));
-    });
+    const observable$ = ajax.getJSON('https://randomuser.me/api/');
+    // const observable$ = Observable.create(observer => {
+    //   target.innerHTML = 'Loading...';
+    //   fetch('https://randomuser.me/api/')
+    //     .then(response => response.json())
+    //     .then(data => {
+    //       observer.next(data);
+    //       observer.complete();
+    //       target.innerHTML = 'Fetch Data';
+    //     })
+    //     .catch(err => observer.error(err));
+    // });
 
     const subscription = observable$.subscribe(
       data => console.log(data),
